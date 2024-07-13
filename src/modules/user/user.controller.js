@@ -1,3 +1,4 @@
+import { App } from "../../../database/models/applicationModel.js";
 import { User } from "../../../database/models/userModel.js";
 import { sendEmail } from "../../email/email.js";
 import { catchError } from "../../middlewares/catchErrors.js";
@@ -78,6 +79,8 @@ const getAccountsByTheRecovery = catchError(async (req, res, next) => {
 const deleteAccount = catchError(async (req, res, next) => {
   const user = await User.findByIdAndDelete(req.user.userId);
   if (!user) return sendErrorUser(next);
+  // delete his applications if found
+  await App.deleteMany({ userId: req.user.userId });
   res.status(200).json({ message: "success", user });
 });
 export {

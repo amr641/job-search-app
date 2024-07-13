@@ -35,6 +35,7 @@ const deleteCompany = catchError(async (req, res, next) => {
   let hrAuth = company.companyHR == req.user.userId;
   if (!hrAuth) return next(new appError("you are not allowed to access", 403));
   await Company.deleteOne({ _id: req.params.id });
+  await Job.deleteOne({ addedBy: company.companyHR });
   res.status(201).json({ messsage: "success" });
 });
 // search for company by name
